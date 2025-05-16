@@ -3,7 +3,7 @@ package step_15_graphs.lec_2_problems_on_dfs_bfs;
 import java.util.LinkedList;
 import java.util.Queue;
 
-class Solution {
+public class RottenOranges {
     public int orangesRotting(int[][] grid) {
         Queue<int[]> q = new LinkedList<>();
         int rows = grid.length, cols = grid[0].length;
