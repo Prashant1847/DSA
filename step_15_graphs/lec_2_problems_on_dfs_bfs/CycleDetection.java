@@ -1,26 +1,45 @@
 package step_15_graphs.lec_2_problems_on_dfs_bfs;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
-class Solution {
+class Pair{
+    int parent, node;
     
-    private boolean traverse(int node, ArrayList<Integer> adj[], boolean vis[], int prevVertex){
+    Pair(int node, int parent){
+        this.node = node;
+        this.parent = parent;
+    }
+}
+
+
+ class CycleDetectionUndirected{
+    
+    private boolean traverse(int node, ArrayList<Integer> adj[], boolean vis[]){
+        Queue<Pair> q = new LinkedList<>();
+        
+        q.add(new Pair(node, -1));
         vis[node] = true;
-        // System.out.println("node -> "+node);
-         for(Integer it: adj[node]){
-            if(!vis[it]){
-            //   System.out.println("traversing on  -> "+it);
-              boolean result = traverse(it, adj, vis, node);  
-              if (result) return true;
-            } 
-            else if(vis[it] && prevVertex != it) return true;
+        
+        while(!q.isEmpty()){
+            Pair element = q.poll();
+            
+            for(Integer it: adj[element.node]){
+                if(!vis[it]){
+                    q.add(new Pair(it, element.node));
+                    vis[it] = true;
+                }else if(element.parent!= it) return true;
+            }
+            
+            
         }
+        
         return false;
     }
     
-    
     public boolean isCycle(int V, int[][] edges) {
-        // Code here
+        // List creation
         ArrayList<Integer> adj[] = new ArrayList[V];
         
         for(int i = 0; i<edges.length; i++){
@@ -32,21 +51,14 @@ class Solution {
             adj[v1].add(v2);
             adj[v2].add(v1);
         }
-        
-        // for(int i = 0; i<V; i++){
-        //     System.out.print("i -> "+i);
-        //     for(Integer it: adj[i]){
-        //         System.out.print(it+", ");
-        //     }
-        //     System.out.println();
-        // }
-        
+    
+    
         boolean vis[] = new boolean[V];
+        
         for(int i = 0; i<edges.length; i++){
             int startingNode = edges[i][0];
             if(!vis[startingNode]){
-                boolean result = traverse(startingNode, adj, vis, -1);
-                if(result) return true;
+                if( traverse(startingNode, adj, vis) ) return true;
             }
         }
         return false;
